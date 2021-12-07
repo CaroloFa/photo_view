@@ -14,6 +14,7 @@ import 'package:photo_view/photo_view.dart'
 import 'package:photo_view/src/controller/photo_view_controller.dart';
 import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart';
 import 'package:photo_view/src/core/photo_view_gesture_detector.dart';
+import 'package:photo_view/src/core/photo_view_overlay.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
 import 'package:photo_view/src/utils/photo_view_hero_attributes.dart';
 
@@ -265,32 +266,59 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             basePosition: pageOption.basePosition,
             disableGestures: pageOption.disableGestures,
           )
-        : PhotoView(
-            key: ObjectKey(index),
-            imageProvider: pageOption.imageProvider,
-            loadingBuilder: widget.loadingBuilder,
-            backgroundDecoration: widget.backgroundDecoration,
-            controller: pageOption.controller,
-            scaleStateController: pageOption.scaleStateController,
-            customSize: widget.customSize,
-            gaplessPlayback: widget.gaplessPlayback,
-            heroAttributes: pageOption.heroAttributes,
-            scaleStateChangedCallback: scaleStateChangedCallback,
-            enableRotation: widget.enableRotation,
-            initialScale: pageOption.initialScale,
-            minScale: pageOption.minScale,
-            maxScale: pageOption.maxScale,
-            scaleStateCycle: pageOption.scaleStateCycle,
-            onTapUp: pageOption.onTapUp,
-            onTapDown: pageOption.onTapDown,
-            onScaleEnd: pageOption.onScaleEnd,
-            gestureDetectorBehavior: pageOption.gestureDetectorBehavior,
-            tightMode: pageOption.tightMode,
-            filterQuality: pageOption.filterQuality,
-            basePosition: pageOption.basePosition,
-            disableGestures: pageOption.disableGestures,
-            errorBuilder: pageOption.errorBuilder,
-          );
+        : pageOption.overlays != null
+            ? PhotoView.customImage(
+                key: ObjectKey(index),
+                imageProvider: pageOption.imageProvider,
+                overlays: pageOption.overlays,
+                loadingBuilder: widget.loadingBuilder,
+                backgroundDecoration: widget.backgroundDecoration,
+                controller: pageOption.controller,
+                scaleStateController: pageOption.scaleStateController,
+                customSize: widget.customSize,
+                heroAttributes: pageOption.heroAttributes,
+                scaleStateChangedCallback: scaleStateChangedCallback,
+                enableRotation: widget.enableRotation,
+                initialScale: pageOption.initialScale,
+                minScale: pageOption.minScale,
+                maxScale: pageOption.maxScale,
+                scaleStateCycle: pageOption.scaleStateCycle,
+                onTapUp: pageOption.onTapUp,
+                onTapDown: pageOption.onTapDown,
+                onScaleEnd: pageOption.onScaleEnd,
+                gestureDetectorBehavior: pageOption.gestureDetectorBehavior,
+                tightMode: pageOption.tightMode,
+                filterQuality: pageOption.filterQuality,
+                basePosition: pageOption.basePosition,
+                disableGestures: pageOption.disableGestures,
+                errorBuilder: pageOption.errorBuilder,
+              )
+            : PhotoView(
+                key: ObjectKey(index),
+                imageProvider: pageOption.imageProvider,
+                loadingBuilder: widget.loadingBuilder,
+                backgroundDecoration: widget.backgroundDecoration,
+                controller: pageOption.controller,
+                scaleStateController: pageOption.scaleStateController,
+                customSize: widget.customSize,
+                gaplessPlayback: widget.gaplessPlayback,
+                heroAttributes: pageOption.heroAttributes,
+                scaleStateChangedCallback: scaleStateChangedCallback,
+                enableRotation: widget.enableRotation,
+                initialScale: pageOption.initialScale,
+                minScale: pageOption.minScale,
+                maxScale: pageOption.maxScale,
+                scaleStateCycle: pageOption.scaleStateCycle,
+                onTapUp: pageOption.onTapUp,
+                onTapDown: pageOption.onTapDown,
+                onScaleEnd: pageOption.onScaleEnd,
+                gestureDetectorBehavior: pageOption.gestureDetectorBehavior,
+                tightMode: pageOption.tightMode,
+                filterQuality: pageOption.filterQuality,
+                basePosition: pageOption.basePosition,
+                disableGestures: pageOption.disableGestures,
+                errorBuilder: pageOption.errorBuilder,
+              );
 
     return ClipRect(
       child: photoView,
@@ -332,6 +360,30 @@ class PhotoViewGalleryPageOptions {
     this.errorBuilder,
   })  : child = null,
         childSize = null,
+        overlays = null,
+        assert(imageProvider != null);
+
+  PhotoViewGalleryPageOptions.customImage({
+    required this.imageProvider,
+    this.overlays,
+    this.heroAttributes,
+    this.minScale,
+    this.maxScale,
+    this.initialScale,
+    this.controller,
+    this.scaleStateController,
+    this.basePosition,
+    this.scaleStateCycle,
+    this.onTapUp,
+    this.onTapDown,
+    this.onScaleEnd,
+    this.gestureDetectorBehavior,
+    this.tightMode,
+    this.filterQuality,
+    this.disableGestures,
+    this.errorBuilder,
+  })  : child = null,
+        childSize = null,
         assert(imageProvider != null);
 
   PhotoViewGalleryPageOptions.customChild({
@@ -353,7 +405,10 @@ class PhotoViewGalleryPageOptions {
     this.filterQuality,
     this.disableGestures,
   })  : errorBuilder = null,
-        imageProvider = null;
+        imageProvider = null,
+        overlays = null;
+
+  List<PhotoViewOverlay>? overlays;
 
   /// Mirror to [PhotoView.imageProvider]
   final ImageProvider? imageProvider;

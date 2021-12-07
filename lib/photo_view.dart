@@ -1,11 +1,11 @@
 library photo_view;
 
 import 'package:flutter/material.dart';
-
 import 'package:photo_view/src/controller/photo_view_controller.dart';
 import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart';
 import 'package:photo_view/src/core/photo_view_core.dart';
 import 'package:photo_view/src/photo_view_computed_scale.dart';
+import 'package:photo_view/src/core/photo_view_overlay.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
 import 'package:photo_view/src/photo_view_wrappers.dart';
 import 'package:photo_view/src/utils/photo_view_hero_attributes.dart';
@@ -15,6 +15,7 @@ export 'src/controller/photo_view_scalestate_controller.dart';
 export 'src/core/photo_view_gesture_detector.dart'
     show PhotoViewGestureDetectorScope;
 export 'src/photo_view_computed_scale.dart';
+export 'src/core/photo_view_overlay.dart';
 export 'src/photo_view_scale_state.dart';
 export 'src/utils/photo_view_hero_attributes.dart';
 
@@ -298,6 +299,39 @@ class PhotoView extends StatefulWidget {
         loadingBuilder = null,
         super(key: key);
 
+  PhotoView.customImage({
+    Key? key,
+    required this.imageProvider,
+    this.overlays,
+    this.loadingBuilder,
+    this.backgroundDecoration,
+    this.heroAttributes,
+    this.scaleStateChangedCallback,
+    this.enableRotation = false,
+    this.controller,
+    this.scaleStateController,
+    this.maxScale,
+    this.minScale,
+    this.initialScale,
+    this.basePosition,
+    this.scaleStateCycle,
+    this.onTapUp,
+    this.onTapDown,
+    this.onScaleEnd,
+    this.customSize,
+    this.gestureDetectorBehavior,
+    this.tightMode,
+    this.filterQuality,
+    this.disableGestures,
+    this.errorBuilder,
+    this.enablePanAlways,
+  })  : childSize = null,
+        child = null,
+        gaplessPlayback = false,
+        super(key: key);
+
+  List<PhotoViewOverlay>? overlays;
+
   /// Given a [imageProvider] it resolves into an zoomable image widget using. It
   /// is required
   final ImageProvider? imageProvider;
@@ -514,32 +548,60 @@ class _PhotoViewState extends State<PhotoView>
                 disableGestures: widget.disableGestures,
                 enablePanAlways: widget.enablePanAlways,
               )
-            : ImageWrapper(
-                imageProvider: widget.imageProvider!,
-                loadingBuilder: widget.loadingBuilder,
-                backgroundDecoration: backgroundDecoration,
-                gaplessPlayback: widget.gaplessPlayback,
-                heroAttributes: widget.heroAttributes,
-                scaleStateChangedCallback: widget.scaleStateChangedCallback,
-                enableRotation: widget.enableRotation,
-                controller: _controller,
-                scaleStateController: _scaleStateController,
-                maxScale: widget.maxScale,
-                minScale: widget.minScale,
-                initialScale: widget.initialScale,
-                basePosition: widget.basePosition,
-                scaleStateCycle: widget.scaleStateCycle,
-                onTapUp: widget.onTapUp,
-                onTapDown: widget.onTapDown,
-                onScaleEnd: widget.onScaleEnd,
-                outerSize: computedOuterSize,
-                gestureDetectorBehavior: widget.gestureDetectorBehavior,
-                tightMode: widget.tightMode,
-                filterQuality: widget.filterQuality,
-                disableGestures: widget.disableGestures,
-                errorBuilder: widget.errorBuilder,
-                enablePanAlways: widget.enablePanAlways,
-              );
+            : widget.overlays != null
+                ? CustomImageWrapper(
+                    imageProvider: widget.imageProvider!,
+                    overlays: widget.overlays,
+                    loadingBuilder: widget.loadingBuilder,
+                    backgroundDecoration: backgroundDecoration,
+                    gaplessPlayback: widget.gaplessPlayback,
+                    heroAttributes: widget.heroAttributes,
+                    scaleStateChangedCallback: widget.scaleStateChangedCallback,
+                    enableRotation: widget.enableRotation,
+                    controller: _controller,
+                    scaleStateController: _scaleStateController,
+                    maxScale: widget.maxScale,
+                    minScale: widget.minScale,
+                    initialScale: widget.initialScale,
+                    basePosition: widget.basePosition,
+                    scaleStateCycle: widget.scaleStateCycle,
+                    onTapUp: widget.onTapUp,
+                    onTapDown: widget.onTapDown,
+                    onScaleEnd: widget.onScaleEnd,
+                    outerSize: computedOuterSize,
+                    gestureDetectorBehavior: widget.gestureDetectorBehavior,
+                    tightMode: widget.tightMode,
+                    filterQuality: widget.filterQuality,
+                    disableGestures: widget.disableGestures,
+                    errorBuilder: widget.errorBuilder,
+                    enablePanAlways: widget.enablePanAlways,
+                  )
+                : ImageWrapper(
+                    imageProvider: widget.imageProvider!,
+                    loadingBuilder: widget.loadingBuilder,
+                    backgroundDecoration: backgroundDecoration,
+                    gaplessPlayback: widget.gaplessPlayback,
+                    heroAttributes: widget.heroAttributes,
+                    scaleStateChangedCallback: widget.scaleStateChangedCallback,
+                    enableRotation: widget.enableRotation,
+                    controller: _controller,
+                    scaleStateController: _scaleStateController,
+                    maxScale: widget.maxScale,
+                    minScale: widget.minScale,
+                    initialScale: widget.initialScale,
+                    basePosition: widget.basePosition,
+                    scaleStateCycle: widget.scaleStateCycle,
+                    onTapUp: widget.onTapUp,
+                    onTapDown: widget.onTapDown,
+                    onScaleEnd: widget.onScaleEnd,
+                    outerSize: computedOuterSize,
+                    gestureDetectorBehavior: widget.gestureDetectorBehavior,
+                    tightMode: widget.tightMode,
+                    filterQuality: widget.filterQuality,
+                    disableGestures: widget.disableGestures,
+                    errorBuilder: widget.errorBuilder,
+                    enablePanAlways: widget.enablePanAlways,
+                  );
       },
     );
   }

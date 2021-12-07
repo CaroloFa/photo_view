@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:photo_view/photo_view.dart'
     show
@@ -12,6 +13,7 @@ import 'package:photo_view/src/controller/photo_view_controller_delegate.dart';
 import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart';
 import 'package:photo_view/src/core/photo_view_gesture_detector.dart';
 import 'package:photo_view/src/core/photo_view_hit_corners.dart';
+import 'package:photo_view/src/core/photo_view_overlay.dart';
 import 'package:photo_view/src/utils/photo_view_utils.dart';
 
 const _defaultDecoration = const BoxDecoration(
@@ -41,7 +43,8 @@ class PhotoViewCore extends StatefulWidget {
     required this.filterQuality,
     required this.disableGestures,
     required this.enablePanAlways,
-  })  : customChild = null,
+  })  : overlays = null,
+        customChild = null,
         super(key: key);
 
   const PhotoViewCore.customChild({
@@ -63,10 +66,36 @@ class PhotoViewCore extends StatefulWidget {
     required this.filterQuality,
     required this.disableGestures,
     required this.enablePanAlways,
-  })  : imageProvider = null,
+  })  : overlays = null,
+        imageProvider = null,
         gaplessPlayback = false,
         super(key: key);
 
+  const PhotoViewCore.customImage({
+    Key? key,
+    required this.imageProvider,
+    required this.overlays,
+    required this.backgroundDecoration,
+    required this.gaplessPlayback,
+    required this.heroAttributes,
+    required this.enableRotation,
+    required this.onTapUp,
+    required this.onTapDown,
+    required this.onScaleEnd,
+    required this.gestureDetectorBehavior,
+    required this.controller,
+    required this.scaleBoundaries,
+    required this.scaleStateCycle,
+    required this.scaleStateController,
+    required this.basePosition,
+    required this.tightMode,
+    required this.filterQuality,
+    required this.disableGestures,
+    required this.enablePanAlways,
+  })  : customChild = null,
+        super(key: key);
+
+  final List<PhotoViewOverlay>? overlays;
   final Decoration? backgroundDecoration;
   final ImageProvider? imageProvider;
   final bool? gaplessPlayback;
@@ -375,13 +404,25 @@ class PhotoViewCoreState extends State<PhotoViewCore>
   Widget _buildChild() {
     return widget.hasCustomChild
         ? widget.customChild!
-        : Image(
-            image: widget.imageProvider!,
-            gaplessPlayback: widget.gaplessPlayback ?? false,
-            filterQuality: widget.filterQuality,
-            width: scaleBoundaries.childSize.width * scale,
-            fit: BoxFit.contain,
-          );
+        : widget.overlays != null
+            ? Stack(
+                alignment: Alignment.center,
+                children: [
+                  Image(
+                    image: widget.imageProvider!,
+                    gaplessPlayback: widget.gaplessPlayback ?? false,
+                    filterQuality: widget.filterQuality,
+                    fit: BoxFit.contain,
+                  ),
+                ]..addAll(widget.overlays!),
+              )
+            : Image(
+                image: widget.imageProvider!,
+                gaplessPlayback: widget.gaplessPlayback ?? false,
+                filterQuality: widget.filterQuality,
+                width: scaleBoundaries.childSize.width * scale,
+                fit: BoxFit.contain,
+              );
   }
 }
 
