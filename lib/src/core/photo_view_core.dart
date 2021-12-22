@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:photo_view/photo_view.dart'
     show
+        PhotoViewOverlayBuilder,
         PhotoViewScaleState,
         PhotoViewHeroAttributes,
         PhotoViewImageTapDownCallback,
@@ -13,7 +14,6 @@ import 'package:photo_view/src/controller/photo_view_controller_delegate.dart';
 import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart';
 import 'package:photo_view/src/core/photo_view_gesture_detector.dart';
 import 'package:photo_view/src/core/photo_view_hit_corners.dart';
-import 'package:photo_view/src/core/photo_view_overlay.dart';
 import 'package:photo_view/src/utils/photo_view_utils.dart';
 
 const _defaultDecoration = const BoxDecoration(
@@ -95,7 +95,7 @@ class PhotoViewCore extends StatefulWidget {
   })  : customChild = null,
         super(key: key);
 
-  final List<PhotoViewOverlay>? overlays;
+  final List<PhotoViewOverlayBuilder>? overlays;
   final Decoration? backgroundDecoration;
   final ImageProvider? imageProvider;
   final bool? gaplessPlayback;
@@ -347,7 +347,7 @@ class PhotoViewCoreState extends State<PhotoViewCore>
                 basePosition,
                 useImageScale,
               ),
-              child: _buildHero(),
+              child: _buildHero(context, computedScale),
             );
 
             final child = Container(
@@ -388,7 +388,7 @@ class PhotoViewCoreState extends State<PhotoViewCore>
         });
   }
 
-  Widget _buildHero() {
+  Widget _buildHero(BuildContext context, double scale) {
     return heroAttributes != null
         ? Hero(
             tag: heroAttributes!.tag,
@@ -396,12 +396,12 @@ class PhotoViewCoreState extends State<PhotoViewCore>
             flightShuttleBuilder: heroAttributes!.flightShuttleBuilder,
             placeholderBuilder: heroAttributes!.placeholderBuilder,
             transitionOnUserGestures: heroAttributes!.transitionOnUserGestures,
-            child: _buildChild(),
+            child: _buildChild(context, scale),
           )
-        : _buildChild();
+        : _buildChild(context, scale);
   }
 
-  Widget _buildChild() {
+  Widget _buildChild(BuildContext context, double scale) {
     return widget.hasCustomChild
         ? widget.customChild!
         : widget.overlays != null
@@ -414,7 +414,7 @@ class PhotoViewCoreState extends State<PhotoViewCore>
                     filterQuality: widget.filterQuality,
                     fit: BoxFit.contain,
                   ),
-                ]..addAll(widget.overlays!),
+                ]..addAll(_buildOverlays(widget.overlays!, context, scale)),
               )
             : Image(
                 image: widget.imageProvider!,
@@ -424,6 +424,15 @@ class PhotoViewCoreState extends State<PhotoViewCore>
                 fit: BoxFit.contain,
               );
   }
+}
+
+List<Widget> _buildOverlays(List<PhotoViewOverlayBuilder> builders,
+    BuildContext context, double scale) {
+  final List<Widget> widgets = [];
+  for (var builder in builders) {
+    widgets.add(builder(context, scale));
+  }
+  return widgets;
 }
 
 class _CenterWithOriginalSizeDelegate extends SingleChildLayoutDelegate {

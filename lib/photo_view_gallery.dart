@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:photo_view/photo_view.dart'
     show
+        PhotoViewOverlayBuilder,
         LoadingBuilder,
         PhotoView,
         PhotoViewImageTapDownCallback,
@@ -14,7 +15,6 @@ import 'package:photo_view/photo_view.dart'
 import 'package:photo_view/src/controller/photo_view_controller.dart';
 import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart';
 import 'package:photo_view/src/core/photo_view_gesture_detector.dart';
-import 'package:photo_view/src/core/photo_view_overlay.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
 import 'package:photo_view/src/utils/photo_view_hero_attributes.dart';
 
@@ -408,7 +408,7 @@ class PhotoViewGalleryPageOptions {
         imageProvider = null,
         overlays = null;
 
-  List<PhotoViewOverlay>? overlays;
+  List<PhotoViewOverlayBuilder>? overlays;
 
   /// Mirror to [PhotoView.imageProvider]
   final ImageProvider? imageProvider;

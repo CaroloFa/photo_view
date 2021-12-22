@@ -1,5 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:photo_view/src/core/photo_view_overlay.dart';
 
 import '../photo_view.dart';
 import 'core/photo_view_core.dart';
@@ -337,7 +336,7 @@ class CustomImageWrapper extends StatefulWidget {
     required this.enablePanAlways,
   }) : super(key: key);
 
-  final List<PhotoViewOverlay>? overlays;
+  final List<PhotoViewOverlayBuilder>? overlays;
   final ImageProvider imageProvider;
   final LoadingBuilder? loadingBuilder;
   final ImageErrorWidgetBuilder? errorBuilder;
