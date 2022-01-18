@@ -275,6 +275,7 @@ class PhotoView extends StatefulWidget {
   PhotoView.customChild({
     Key? key,
     required this.child,
+    this.overlays,
     this.childSize,
     this.backgroundDecoration,
     this.heroAttributes,
@@ -529,6 +530,7 @@ class _PhotoViewState extends State<PhotoView>
         return widget._isCustomChild
             ? CustomChildWrapper(
                 child: widget.child,
+                overlays: widget.overlays,
                 childSize: widget.childSize,
                 backgroundDecoration: backgroundDecoration,
                 heroAttributes: widget.heroAttributes,

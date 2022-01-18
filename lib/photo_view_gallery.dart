@@ -245,6 +245,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
         ? PhotoView.customChild(
             key: ObjectKey(index),
             child: pageOption.child,
+            overlays: pageOption.overlays,
             childSize: pageOption.childSize,
             backgroundDecoration: widget.backgroundDecoration,
             controller: pageOption.controller,
@@ -388,6 +389,7 @@ class PhotoViewGalleryPageOptions {
 
   PhotoViewGalleryPageOptions.customChild({
     required this.child,
+    this.overlays,
     this.childSize,
     this.heroAttributes,
     this.minScale,
@@ -405,8 +407,7 @@ class PhotoViewGalleryPageOptions {
     this.filterQuality,
     this.disableGestures,
   })  : errorBuilder = null,
-        imageProvider = null,
-        overlays = null;
+        imageProvider = null;
 
   List<PhotoViewOverlayBuilder>? overlays;
 

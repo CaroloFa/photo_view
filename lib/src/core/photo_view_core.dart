@@ -50,6 +50,7 @@ class PhotoViewCore extends StatefulWidget {
   const PhotoViewCore.customChild({
     Key? key,
     required this.customChild,
+    this.overlays,
     required this.backgroundDecoration,
     this.heroAttributes,
     required this.enableRotation,
@@ -66,8 +67,7 @@ class PhotoViewCore extends StatefulWidget {
     required this.filterQuality,
     required this.disableGestures,
     required this.enablePanAlways,
-  })  : overlays = null,
-        imageProvider = null,
+  })  : imageProvider = null,
         gaplessPlayback = false,
         super(key: key);
 
@@ -402,20 +402,22 @@ class PhotoViewCoreState extends State<PhotoViewCore>
   }
 
   Widget _buildChild(BuildContext context, double scale) {
-    return widget.hasCustomChild
-        ? widget.customChild!
-        : widget.overlays != null
-            ? Stack(
-                alignment: Alignment.center,
-                children: [
-                  Image(
-                    image: widget.imageProvider!,
-                    gaplessPlayback: widget.gaplessPlayback ?? false,
-                    filterQuality: widget.filterQuality,
-                    fit: BoxFit.contain,
-                  ),
-                ]..addAll(_buildOverlays(widget.overlays!, context, scale)),
-              )
+    return widget.overlays != null
+        ? Stack(
+            alignment: Alignment.center,
+            children: [
+              widget.hasCustomChild
+                  ? widget.customChild!
+                  : Image(
+                      image: widget.imageProvider!,
+                      gaplessPlayback: widget.gaplessPlayback ?? false,
+                      filterQuality: widget.filterQuality,
+                      fit: BoxFit.contain,
+                    ),
+            ]..addAll(_buildOverlays(widget.overlays!, context, scale)),
+          )
+        : widget.hasCustomChild
+            ? widget.customChild!
             : Image(
                 image: widget.imageProvider!,
                 gaplessPlayback: widget.gaplessPlayback ?? false,
